@@ -133,7 +133,7 @@ public class DBService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response connectToDB(DBConnect dbConnect) throws ClassNotFoundException {
 
-		final String connUrl = ConnectionCreator.prepareConnString(DBType.DERBY, dbConnect.getHost(), dbConnect.getPort(), dbConnect.getName());
+		final String connUrl = ConnectionCreator.prepareConnString(dbConnect.getDbType(), dbConnect.getHost(), dbConnect.getPort(), dbConnect.getName());
 
 		try {
 			if (!DB_MAP.containsKey(connUrl)) {
