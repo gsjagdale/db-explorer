@@ -10,8 +10,8 @@
 			<table>
 				<tr>
 					<td>Database Type</td>
-					<td><select>
-							<option data-ng-repeat="dbType in dbTypes" data-ng-model="db.dbType">{{dbType}}</option>
+					<td><select data-ng-model="db.dbType">
+							<option data-ng-repeat="dbType in dbTypes">{{dbType}}</option>
 					</select></td>
 				</tr>
 				<tr>
