@@ -23,6 +23,10 @@ public class ConnectionCreator {
 			Class.forName("org.apache.derby.jdbc.ClientDriver");
 			builder.append("jdbc:derby://").append(host).append(":").append(port).append("/").append(dbName);
 			break;
+		case POSTGRES:
+		    Class.forName("org.postgresql.Driver");
+		    builder.append("jdbc:postgresql://").append(host).append(":").append(port).append("/").append(dbName).append("?sslmode=require");
+		    break;
 		default:
 			break;
 		}
