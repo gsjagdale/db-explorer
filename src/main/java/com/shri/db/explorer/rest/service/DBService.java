@@ -138,7 +138,8 @@ public class DBService {
 		try {
 			if (!DB_MAP.containsKey(connUrl)) {
 				Connection connection;
-
+				// TODO Remove below SOP and user Logger
+				System.out.println("Connecting with URL: " + connUrl + " with userName:" + dbConnect.getUsername());
 				connection = ConnectionCreator.getConnection(connUrl, dbConnect.getUsername(), dbConnect.getPassword());
 
 				if (connection != null) {
