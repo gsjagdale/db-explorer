@@ -15,11 +15,14 @@ var HTTPFactory = dbExplorerApp.factory("HTTPFactory", function($http) {
 		});
 	}
 
-	fact.post = function(uri, submitData) {
+	fact.post = function(uri, submitData, mediaType) {
 		return $http({
 			method : 'POST',
 			url : uri,
-			data : submitData
+			data : submitData,
+			headers: {
+            			'Content-Type': mediaType
+        		}
 		});
 	}
 
@@ -56,7 +59,7 @@ dbExplorerApp.controller("mainController", function(HTTPFactory, $scope) {
 	}
 
 	$scope.connect = function() {
-		HTTPFactory.post('rest/db/connect', $scope.db).then(
+		HTTPFactory.post('rest/db/connect', $scope.db, 'application/json').then(
 				function successCallback(data) {
 					if (data.data.message === "Connected") {
 						$scope.isConnected = true;
