@@ -30,10 +30,10 @@ import com.shri.db.explorer.connection.SQLExecutor;
 import com.shri.db.explorer.connection.bo.Column;
 import com.shri.db.explorer.connection.bo.DBType;
 import com.shri.db.explorer.connection.bo.Database;
-import com.shri.db.explorer.connection.bo.RSasJson;
 import com.shri.db.explorer.connection.bo.Schema;
 import com.shri.db.explorer.connection.bo.Table;
 import com.shri.db.explorer.rest.service.bo.DBConnect;
+import com.shri.db.explorer.rest.service.bo.RSasJson;
 
 @Path("/db")
 public class DBService {
