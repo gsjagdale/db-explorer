@@ -1,0 +1,81 @@
+<html>
+<head>
+<title>DB Editor with Explorer</title>
+<script type="text/javascript" src="https://code.angularjs.org/1.6.8/angular.min.js"></script>
+<script type="text/javascript" src="https://code.angularjs.org/1.6.8/angular-route.min.js"></script>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-ng-app="dbExplorerApp">
+	<div data-ng-controller="mainController" data-ng-init="init();">
+		<div data-ng-hide="isConnected">
+			<table>
+				<tr>
+					<td>Database Type</td>
+					<td><select data-ng-model="db.dbType">
+							<option data-ng-repeat="dbType in dbTypes">{{dbType}}</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td>Host</td>
+					<td><input data-ng-model="db.host" /></td>
+				</tr>
+				<tr>
+					<td>Port</td>
+					<td><input data-ng-model="db.port" maxlength="4" /></td>
+				</tr>
+				<tr>
+					<td>Database</td>
+					<td><input data-ng-model="db.name" /></td>
+				</tr>
+				<tr>
+					<td>Username</td>
+					<td><input data-ng-model="db.username" /></td>
+				</tr>
+				<tr>
+					<td>Password</td>
+					<td><input data-ng-model="db.password" type="password" /></td>
+				</tr>
+				<tr style="text-align: right;">
+					<td colspan="2"><input type="button" value="Connect" data-ng-click="connect();" /></td>
+				</tr>
+			</table>
+		</div>
+		<label style="color: red;">{{message}}</label>
+		<div data-ng-show="isConnected">
+
+			<div>
+				<table>
+					<tr>
+						<td>Schemas</td>
+						<td><select data-ng-change="changeTables();" data-ng-model="selectedSchema">
+								<option data-ng-repeat="schema in schemas">{{schema}}</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td>Tables</td>
+						<td><select data-ng-change="changeColumns();" data-ng-model="selectedTable">
+								<option data-ng-repeat="table in tables">{{table}}</option>
+						</select></td>
+					</tr>
+					<tr>
+						<td colspan="2"><label data-ng-repeat="column in columns">{{column}} | </label></td>
+					</tr>
+				</table>
+			</div>
+			<div class="sqlQueryDiv">
+				<textarea id="sqlQueryTextArea"></textarea>
+				<input type="button" value="Execute" data-ng-click="executeSql();" />
+				<table>
+					<tr>
+						<td data-ng-repeat="columnName in queryResult.columnNames">{{columnName}}</td>
+					</tr>
+					<tr data-ng-repeat="rowData in queryResult.data">
+						<td data-ng-repeat="cellData in rowData track by $index">{{cellData}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="js/mainController.js"></script>
+</body>
+</html>
