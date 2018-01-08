@@ -1,0 +1,51 @@
+<div class="w3-content w3-margin-top w3-cell-middle" style="max-width:600px;">
+  <div >
+    <div class=".w3-col">
+    	<div class="w3-container">
+			<!-- BLOCK if needed for information -->
+		</div>
+        <div class="w3-container w3-card w3-padding-16">
+            <label class="w3-wide">User Details</label>
+            <div class="w3-row-padding w3-margin-bottom w3-margin-top" >
+	            <div class="w3-third">
+	              <input class="w3-input w3-border" type="text" placeholder="User Name" required data-ng-model="db.username" />
+	            </div>
+	            <div class="w3-third">
+	              <input class="w3-input w3-border" type="password" placeholder="Password" required data-ng-model="db.password" />
+	            </div>
+			</div>
+            <label class="w3-wide w3-center">Database Details</label>
+            <div class="w3-row-padding w3-margin-bottom">
+                <div class="w3-col w3-margin-top">
+				    <select class="w3-select w3-border" placeholder="Select type of DB" data-ng-model="db.dbType">
+                        <option data-ng-repeat="dbType in dbTypes">{{dbType}}</option>
+                    </select>
+                </div>
+                <div class="w3-col w3-margin-top">
+				    <input class="w3-input w3-border" type="text" placeholder="Host Name" required data-ng-model="db.host">
+                </div>
+                <div class="w3-quarter w3-margin-top">
+				    <input class="w3-input w3-border" type="text" placeholder="Port Number" required data-ng-model="db.port">
+                </div>
+                <div class="w3-half w3-margin-top">
+				    <input class="w3-input w3-border" type="text" placeholder="Database Name" required data-ng-model="db.name">
+                </div>
+            </div>
+            <div class="w3-container w3-right-align">
+                <input type="button" class="w3-button w3-dark-grey" data-ng-click="connect();" value="Connect"/>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<!--<footer class="w3-container w3-teal w3-center w3-margin-top">
+  <p>Find me on social media.</p>
+  <i class="fa fa-facebook-official w3-hover-opacity"></i>
+  <i class="fa fa-instagram w3-hover-opacity"></i>
+  <i class="fa fa-snapchat w3-hover-opacity"></i>
+  <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+  <i class="fa fa-twitter w3-hover-opacity"></i>
+  <i class="fa fa-linkedin w3-hover-opacity"></i>
+  <p>Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank">w3.css</a></p>
+</footer>-->
