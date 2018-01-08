@@ -11,13 +11,20 @@ import java.util.List;
 public class Database extends Entity {
 
 	private final Date creationTime = new Date();
-	
+
 	public Date getCreationTime() {
 		return creationTime;
 	}
 
-	public Database(final Connection connection, String name) {
+	private DBType dbType;
+
+	public DBType getDbType() {
+		return dbType;
+	}
+
+	public Database(final Connection connection, String name, DBType dbType) {
 		super(connection, name);
+		this.dbType = dbType;
 	}
 
 	private List<Schema> schemas;
@@ -33,6 +40,10 @@ public class Database extends Entity {
 			}
 		}
 		return schemas;
+	}
+
+	public Connection getConnection() {
+		return super.getConnection();
 	}
 
 }
