@@ -99,6 +99,7 @@ dbExplorerApp.controller("mainController", function(HTTPFactory, $scope, $locati
 	$scope.queryResult = {};
 	
 	$scope.executeSql = function() {
+		$scope.queryResult = {};
 		$scope.errorMessage = "";
 		var textComponent = document.getElementById('sqlQueryTextArea');
 		var startPos = textComponent.selectionStart;
