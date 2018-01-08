@@ -2,7 +2,7 @@
  * 
  */
 
-var dbExplorerApp = angular.module("dbExplorerApp", []);
+var dbExplorerApp = angular.module("dbExplorerApp", ['ngRoute']);
 
 var HTTPFactory = dbExplorerApp.factory("HTTPFactory", function($http) {
 	var fact = {};
@@ -26,15 +26,27 @@ var HTTPFactory = dbExplorerApp.factory("HTTPFactory", function($http) {
 	return fact;
 });
 
+dbExplorerApp.config(function($routeProvider) {
+    $routeProvider.when("/login", {
+        templateUrl : "html/login.html"
+    }).when("/dbexplorer", {
+        templateUrl : "html/explorer.html"
+    }).when("/profile", {
+        templateUrl : "html/profile.html"
+    }).otherwise({
+    	templateUrl : "html/login.html"
+    });
+});
+
 dbExplorerApp.controller("mainController", function(HTTPFactory, $scope) {
 	$scope.isConnected = false;
 	$scope.db = {
-		"dbType" : "DERBY",
-		"host" : "localhost",
-		"port" : "1527",
-		"name" : "root",
-		"username" : "admin",
-		"password" : "admin"
+		//"dbType" : "DERBY",
+		//"host" : "localhost",
+		//"port" : "1527",
+		//"name" : "root",
+		//"username" : "admin",
+		//"password" : "admin"
 	};
 
 	$scope.init = function() {
@@ -78,4 +90,27 @@ dbExplorerApp.controller("mainController", function(HTTPFactory, $scope) {
 			});
 		}
 	}
+	
+	$scope.selectedSql = "";
+	$scope.queryResult = {};
+	
+	$scope.executeSql = function() {
+		$scope.errorMessage = "";
+		var textComponent = document.getElementById('sqlQueryTextArea');
+		var startPos = textComponent.selectionStart;
+	    var endPos = textComponent.selectionEnd;
+	    $scope.selectedSql = textComponent.value.substring(startPos, endPos);
+		
+		if ($scope.selectedSql !== null && $scope.selectedSql !== "") {
+			HTTPFactory.post('rest/db/executeSql', $scope.selectedSql, 'text/plain').then(
+					function successCallback(data) {
+						$scope.queryResult = data.data;
+					}, function errorCallback(data) {
+						$scope.errorMessage = data.data.message;
+				});
+		}else{
+			$scope.errorMessage = "NO query selected to Execute!!!";
+		}
+	}
+
 });
