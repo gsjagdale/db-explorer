@@ -1,7 +1,9 @@
 package com.shri.db.explorer.rest.service;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -24,9 +26,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import com.shri.db.explorer.connection.ConnectionCreator;
 import com.shri.db.explorer.connection.LambdaHelper;
+import com.shri.db.explorer.connection.SQLExecutor;
 import com.shri.db.explorer.connection.bo.Column;
 import com.shri.db.explorer.connection.bo.DBType;
 import com.shri.db.explorer.connection.bo.Database;
+import com.shri.db.explorer.connection.bo.RSasJson;
 import com.shri.db.explorer.connection.bo.Schema;
 import com.shri.db.explorer.connection.bo.Table;
 import com.shri.db.explorer.rest.service.bo.DBConnect;
@@ -134,27 +138,27 @@ public class DBService {
 	public Response connectToDB(DBConnect dbConnect) throws ClassNotFoundException {
 
 		final String connUrl = ConnectionCreator.prepareConnString(dbConnect.getDbType(), dbConnect.getHost(), dbConnect.getPort(), dbConnect.getName());
-
 		try {
-			if (!DB_MAP.containsKey(connUrl)) {
-				Connection connection;
-				// TODO Remove below SOP and user Logger
-				System.out.println("Connecting with URL: " + connUrl + " with userName:" + dbConnect.getUsername());
-				connection = ConnectionCreator.getConnection(connUrl, dbConnect.getUsername(), dbConnect.getPassword());
+			if (DB_MAP.containsKey(connUrl)) {
+				Database database = getDatabase();
+				if (database == null) {
+					request.getSession().setAttribute(USER_URL, connUrl);
+				} else {
+					database = DB_MAP.get(connUrl);
+					if (database.isClosed()) {
+						final Connection connection = ConnectionCreator.getConnection(connUrl, dbConnect.getUsername(), dbConnect.getPassword());
+						if (connection != null) {
+							request.getSession().setAttribute(USER_URL, connUrl);
+							DB_MAP.put(connUrl, new Database(connection, dbConnect.getName(), dbConnect.getDbType()));
+						}
+					}
+				}
+			} else {
+				Connection connection = ConnectionCreator.getConnection(connUrl, dbConnect.getUsername(), dbConnect.getPassword());
 
 				if (connection != null) {
 					request.getSession().setAttribute(USER_URL, connUrl);
-					DB_MAP.put(connUrl, new Database(connection, dbConnect.getName()));
-				}
-
-			} else {
-				Database database = DB_MAP.get(connUrl);
-				if (database.isClosed()) {
-					final Connection connection = ConnectionCreator.getConnection(connUrl, dbConnect.getUsername(), dbConnect.getPassword());
-					if (connection != null) {
-						request.getSession().setAttribute(USER_URL, connUrl);
-						DB_MAP.put(connUrl, new Database(connection, dbConnect.getName()));
-					}
+					DB_MAP.put(connUrl, new Database(connection, dbConnect.getName(), dbConnect.getDbType()));
 				}
 			}
 		} catch (SQLException e) {
@@ -162,6 +166,38 @@ public class DBService {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ConnectResponse(e.getMessage())).build();
 		}
 		return Response.ok().entity(new ConnectResponse("Connected")).build();
+	}
+
+	@POST
+	@Path("/executeSql")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response executeSql(String inputQuery) throws ClassNotFoundException {
+		RSasJson json = null;
+		try {
+			Database database = getDatabase();
+			String query = SQLExecutor.getInstance().selectQuery(database.getDbType(), inputQuery, 0);
+
+			ResultSet resultSet = SQLExecutor.getInstance().executeSelectOn(database, query);
+			int colCount = resultSet.getMetaData().getColumnCount();
+			List<String> columns = new ArrayList<String>();
+
+			for (int i = 1; i <= colCount; i++) {
+				columns.add(resultSet.getMetaData().getColumnName(i));
+			}
+			json = new RSasJson(columns);
+
+			while (resultSet.next()) {
+				final String[] data = json.addNewData();
+				for (int i = 1; i <= colCount; i++) {
+					data[i - 1] = resultSet.getString(i);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(new ConnectResponse(e.getMessage())).build();
+		}
+		return Response.ok().entity(json).build();
 	}
 
 	@XmlRootElement
