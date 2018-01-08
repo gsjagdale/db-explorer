@@ -41,8 +41,8 @@ dbExplorerApp.config(function($routeProvider) {
     });
 });
 
-dbExplorerApp.controller("mainController", function(HTTPFactory, $scope) {
-	$scope.isConnected = false;
+dbExplorerApp.controller("mainController", function(HTTPFactory, $scope, $location) {
+	//$scope.isConnected = false;
 	$scope.db = {
 		//"dbType" : "DERBY",
 		//"host" : "localhost",
@@ -62,7 +62,8 @@ dbExplorerApp.controller("mainController", function(HTTPFactory, $scope) {
 		HTTPFactory.post('rest/db/connect', $scope.db, 'application/json').then(
 				function successCallback(data) {
 					if (data.data.message === "Connected") {
-						$scope.isConnected = true;
+						//$scope.isConnected = true;
+						$location.url('/dbexplorer');
 						$scope.message = "Fetching details, please wait ...";
 						HTTPFactory.get('rest/db/listSchemas').then(
 								function(data) {
@@ -101,8 +102,8 @@ dbExplorerApp.controller("mainController", function(HTTPFactory, $scope) {
 		$scope.errorMessage = "";
 		var textComponent = document.getElementById('sqlQueryTextArea');
 		var startPos = textComponent.selectionStart;
-	    var endPos = textComponent.selectionEnd;
-	    $scope.selectedSql = textComponent.value.substring(startPos, endPos);
+	    	var endPos = textComponent.selectionEnd;
+	    	$scope.selectedSql = textComponent.value.substring(startPos, endPos);
 		
 		if ($scope.selectedSql !== null && $scope.selectedSql !== "") {
 			HTTPFactory.post('rest/db/executeSql', $scope.selectedSql, 'text/plain').then(
