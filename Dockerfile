@@ -1,6 +1,6 @@
 # Pull base image
 #From tomcat:8-jre8
-FROM java:8
+FROM java:8-alpine
 VOLUME /tmp
 # Maintainer
 #MAINTAINER "Shrikar Jagdale <gsjagdale@gmail.com">
